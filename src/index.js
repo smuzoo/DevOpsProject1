@@ -1,9 +1,9 @@
 const express = require('express');
-const { MongoClient, ServerApiVersion} = require('mongodb');
+const { MongoClient, ServerApiVersion } = require('mongodb');
 const app = express();
 const { readFile } = require('fs').promises;
 
-const port = process.env.PORT || 5000;
+const port = process.env.PORT || 8080;
 
 const mongoUri = "mongodb+srv://anyviolent:OeTzE3VvEYwAlVWG@cluster0.2qwyeev.mongodb.net/?retryWrites=true&w=majority";
 
@@ -62,4 +62,15 @@ async function startServer() {
     }
 }
 
+process.on('unhandledRejection', (reason, promise) => {
+    console.error('Unhandled Rejection at:', promise, 'reason:', reason);
+    process.exit(1);
+});
+
+process.on('uncaughtException', (error) => {
+    console.error('Uncaught Exception:', error);
+    process.exit(1);
+});
+
+console.log('Приложение запущено');
 startServer();
