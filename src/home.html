@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>smuzoo</title>
+</head>
+<body>
+<h1>This is my web app!</h1>
+
+<div>
+    <h2>Add Data to DB:</h2>
+    <form id="dataForm">
+        <label for="message">Message:</label>
+        <input type="text" id="message" name="message" required>
+        <button type="button" onclick="addData()">Add Data</button>
+    </form>
+</div>
+
+<div id="data-container">
+    <!-- Здесь будут отображаться данные из базы данных -->
+</div>
+
+<script>
+    // JavaScript для запроса данных из вашего маршрута /data и добавления данных в базу данных
+    async function fetchData() {
+        const response = await fetch('/data');
+        const data = await response.json();
+
+        const dataContainer = document.getElementById('data-container');
+
+        // Отображаем данные на странице
+        dataContainer.innerHTML = '<h2>Data from DB:</h2>';
+        data.forEach(item => {
+            dataContainer.innerHTML += `<p>${item.message}</p>`;
+        });
+    }
+
+    // JavaScript для добавления данных в базу данных
+    async function addData() {
+        const messageInput = document.getElementById('message');
+        const message = messageInput.value;
+
+        if (message.trim() !== '') {
+            await fetch('/data', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ message }),
+            });
+
+            // После добавления данных, обновляем отображение
+            fetchData();
+
+            // Очищаем поле ввода
+            messageInput.value = '';
+        }
+    }
+
+    // Вызываем функцию при загрузке страницы
+    window.onload = fetchData;
+</script>
+</body>
+</html>
