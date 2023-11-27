@@ -28,6 +28,10 @@ jobs:
       - name: Build Docker image
         run: docker build -t smuzoo/demoapp .
 
+      - name: Set date variable
+        id: date
+        run: echo "::set-output name=date::$(date +'%Y%m%d%H%M%S')"
+
       - name: Build and push Docker image
         uses: docker/build-push-action@v2
         with:
@@ -36,7 +40,7 @@ jobs:
           push: true
           tags: |
             smuzoo/demoapp:latest
-            smuzoo/demoapp:1.0.0-$(date +'%Y%m%d%H%M%S')
+            smuzoo/demoapp:1.0.0-${{ steps.date.outputs.date }}
         env:
           DOCKER_BUILDKIT: 1
           DOCKER_USERNAME: ${{ secrets.DOCKERHUB_USERNAME }}
